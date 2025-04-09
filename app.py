@@ -1,26 +1,38 @@
-from flask import Flask, request, render_template, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, send_from_directory
 import sqlite3
 import os
 from werkzeug.utils import secure_filename
+import config 
 
+# Configuración inicial
 app = Flask(__name__)
-app.secret_key = 'superinseguro'  # 🔐 intencionalmente débil
+app.secret_key = config.SECRET_KEY  # 🔥 Vulnerabilidad intencional
 
-UPLOAD_FOLDER = 'uploads'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['UPLOAD_FOLDER'] = config.UPLOAD_FOLDER
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SECURE'] = False  # ⚠️ Poner en True si usás HTTPS
 
-# Función de conexión a la base de datos
+
+# Almacenamiento en memoria para comentarios (XSS)
+comentarios = []
+
+# =======================
+# Función para conectar a la base de datos
+# =======================
 def get_db():
     conn = sqlite3.connect('db.db')
     conn.row_factory = sqlite3.Row
     return conn
 
-# Página principal
+# =======================
+# Rutas
+# =======================
+
 @app.route('/')
 def index():
     return render_template('index.html')
 
-# Login vulnerable (inyección SQL)
+# 🔓 Login vulnerable a inyección SQL
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     error = None
@@ -31,9 +43,9 @@ def login():
         conn = get_db()
         cursor = conn.cursor()
 
-        # ❌ Consulta vulnerable
+        # ⚠️ Consulta vulnerable (SQLi)
         query = f"SELECT * FROM users WHERE username = '{username}' AND password = '{password}'"
-        print("DEBUG QUERY:", query)  # Se deja a propósito para info leak
+        print("[DEBUG] SQL Query:", query)  # Info leak intencional
         cursor.execute(query)
         user = cursor.fetchone()
 
@@ -45,7 +57,7 @@ def login():
 
     return render_template('login.html', error=error)
 
-# Panel privado
+# 🧠 Panel privado (sin seguridad extra)
 @app.route('/dashboard')
 def dashboard():
     if 'username' in session:
@@ -53,7 +65,7 @@ def dashboard():
     else:
         return redirect(url_for('login'))
 
-# Subida de archivos sin validación
+# 📤 Subida de archivos sin validación
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
     message = None
@@ -65,13 +77,29 @@ def upload_file():
             if file.filename == '':
                 message = "Nombre de archivo vacío."
             else:
-                # ⚠️ No se valida el tipo de archivo
+                # ⚠️ No se valida extensión ni tipo de archivo
                 filename = secure_filename(file.filename)
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
                 message = f"Archivo '{filename}' subido exitosamente."
 
     return render_template('upload.html', message=message)
 
-# Lanzar la app
+# 💬 Comentarios vulnerables a XSS persistente
+@app.route('/comentarios', methods=['GET', 'POST'])
+def comentarios_view():
+    if request.method == 'POST':
+        autor = request.form['autor']
+        texto = request.form['texto']
+        comentarios.append({'autor': autor, 'texto': texto})
+    return render_template('comentarios.html', comentarios=comentarios)
+
+# 📂 Permitir acceso a archivos subidos
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+# =======================
+# Iniciar servidor
+# =======================
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True)  # ⚠️ Debug activado a propósito (info leak)

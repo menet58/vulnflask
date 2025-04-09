@@ -1,13 +1,8 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Inicio - VulnFlask</title>
-</head>
-<body>
-    <h1>Bienvenido a VulnFlask</h1>
-    <p>Esta es una app vulnerable con fines educativos.</p>
-    <a href="/login">🔐 Iniciar sesión</a> |
-    <a href="/upload">📤 Subir archivo</a>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}Inicio{% endblock %}
+
+{% block content %}
+    <h2>Bienvenido al laboratorio VulnFlask</h2>
+    <p>Explorá las distintas vulnerabilidades y poné a prueba tus habilidades.</p>
+{% endblock %}

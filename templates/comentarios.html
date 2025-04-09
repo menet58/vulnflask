@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Comentarios{% endblock %}
+
+{% block content %}
+    <h2>Comentarios públicos</h2>
+    <form method="POST">
+        Nombre:<br>
+        <input type="text" name="autor"><br><br>
+        Comentario:<br>
+        <textarea name="texto" rows="4" cols="40"></textarea><br><br>
+        <input type="submit" value="Enviar">
+    </form>
+
+    <h3>Comentarios recientes:</h3>
+    <ul>
+        {% for c in comentarios %}
+            <li><strong>{{ c.autor }}</strong>: {{ c.texto|safe }}</li>
+            {# ✅ Forma segura: {{ c.texto }} #}
+        {% endfor %}
+
+    </ul>
+{% endblock %}

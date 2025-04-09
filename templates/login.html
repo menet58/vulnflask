@@ -1,22 +1,17 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Login - VulnFlask</title>
-</head>
-<body>
-    <h2>Inicio de sesión</h2>
+{% extends "base.html" %}
 
+{% block title %}Login{% endblock %}
+
+{% block content %}
+    <h2>Login vulnerable</h2>
     {% if error %}
-        <p style="color:red;">{{ error }}</p>
+        <p style="color: red;">{{ error }}</p>
     {% endif %}
-
     <form method="POST">
-        <label>Usuario:</label><br>
+        Usuario:<br>
         <input type="text" name="username"><br><br>
-        <label>Contraseña:</label><br>
+        Contraseña:<br>
         <input type="password" name="password"><br><br>
         <input type="submit" value="Entrar">
     </form>
-</body>
-</html>
+{% endblock %}

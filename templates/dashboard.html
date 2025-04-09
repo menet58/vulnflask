@@ -1,15 +1,8 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Dashboard</title>
-</head>
-<body>
-    <h1>Bienvenido, {{ user }}</h1>
-    <p>Este es tu panel (no tan) seguro.</p>
-    <ul>
-        <li><a href="/upload">📤 Subir archivo</a></li>
-        <li><a href="/">🏠 Volver al inicio</a></li>
-    </ul>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+    <h2>Bienvenido, {{ user }}</h2>
+    <p>Este es tu panel (inseguro).</p>
+{% endblock %}

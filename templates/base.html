@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}VulnFlask{% endblock %}</title>
+    <style>
+        body {
+            font-family: monospace;
+            background-color: #111;
+            color: #eee;
+            padding: 20px;
+        }
+        a { color: cyan; }
+        input, textarea { background-color: #222; color: #eee; border: 1px solid #444; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>💀 VulnFlask</h1>
+        <nav>
+            <a href="/">Inicio</a> |
+            <a href="/login">Login</a> |
+            <a href="/dashboard">Dashboard</a> |
+            <a href="/upload">Subir archivo</a> |
+            <a href="/comentarios">Comentarios</a>
+        </nav>
+        <hr>
+    </header>
+
+    {% block content %}{% endblock %}
+</body>
+</html>
