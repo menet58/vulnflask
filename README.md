@@ -47,7 +47,7 @@
 1. Cloná el repositorio:
 
 ```bash
-git clone https://github.com/tuusuario/vulnflask.git
+git clone https://github.com/menet58/vulnflask.git
 cd vulnflask
 ```
 2. Instalá las dependencias:
@@ -56,7 +56,7 @@ pip install -r requirements.txt
 ```
 3. Ejecutá el script para crear la base de datos:
 ```bash
-python init_db.py
+python create_db.py
 ```
 4. Iniciá la aplicación:
 ```bash
