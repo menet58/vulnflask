@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - VulnFlask</title>
+</head>
+<body>
+    <h2>Inicio de sesión</h2>
+
+    {% if error %}
+        <p style="color:red;">{{ error }}</p>
+    {% endif %}
+
+    <form method="POST">
+        <label>Usuario:</label><br>
+        <input type="text" name="username"><br><br>
+        <label>Contraseña:</label><br>
+        <input type="password" name="password"><br><br>
+        <input type="submit" value="Entrar">
+    </form>
+</body>
+</html>

@@ -1,0 +1,12 @@
+Flask
+scapy
+shodan
+requests
+paramiko
+cryptography
+pycryptodome
+yara-python
+pefile
+beautifulsoup4
+selenium
+colorama
