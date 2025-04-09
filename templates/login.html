@@ -1,17 +1,38 @@
 {% extends "base.html" %}
 
-{% block title %}Login{% endblock %}
+{% block title %}Iniciar sesión | VulnFlask{% endblock %}
 
 {% block content %}
-    <h2>Login vulnerable</h2>
-    {% if error %}
-        <p style="color: red;">{{ error }}</p>
-    {% endif %}
-    <form method="POST">
-        Usuario:<br>
-        <input type="text" name="username"><br><br>
-        Contraseña:<br>
-        <input type="password" name="password"><br><br>
-        <input type="submit" value="Entrar">
-    </form>
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h3 class="text-center mb-4"><i class="fas fa-lock me-2"></i>Acceso a la plataforma</h3>
+
+                {% if error %}
+                    <div class="alert alert-danger text-center" role="alert">
+                        {{ error }}
+                    </div>
+                {% endif %}
+
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Usuario</label>
+                        <input type="text" class="form-control" id="username" name="username" placeholder="usuario123">
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Contraseña</label>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="••••••••">
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-sign-in-alt me-1"></i> Iniciar sesión</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <p class="text-center text-muted mt-3" style="font-size: 0.9em;">
+            ¿Olvidaste tu contraseña? Contactá al administrador.
+        </p>
+    </div>
+</div>
 {% endblock %}

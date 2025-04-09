@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Panel Administrativo | VulnFlask{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="fas fa-user-shield me-2"></i>Panel Administrativo</h2>
+
+<div class="alert alert-warning" role="alert">
+    <strong>Advertencia:</strong> Esta sección contiene información sensible del sistema.
+</div>
+
+<div class="row g-4">
+
+    <div class="col-md-6">
+        <div class="card shadow-sm border-start border-danger border-4">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-users text-danger me-2"></i>Usuarios registrados</h5>
+                <p class="card-text display-6">{{ data.users_total }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow-sm border-start border-info border-4">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-key text-info me-2"></i>Token de Administrador</h5>
+                <p class="card-text"><code>{{ data.admin_token }}</code></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow-sm border-start border-secondary border-4">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-server text-secondary me-2"></i>Servidor de logs</h5>
+                <p class="card-text">{{ data.log_server }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow-sm border-start border-success border-4">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-shield-alt text-success me-2"></i>API Key</h5>
+                <p class="card-text"><strong>{{ data.api_key }}</strong></p>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,14 +1,25 @@
 {% extends "base.html" %}
 
-{% block title %}Subida de archivos{% endblock %}
+{% block title %}Gestor de Documentos | VulnFlask{% endblock %}
 
 {% block content %}
-    <h2>Subir archivo</h2>
-    {% if message %}
-        <p style="color: green;">{{ message }}</p>
-    {% endif %}
-    <form method="POST" enctype="multipart/form-data">
-        <input type="file" name="file"><br><br>
-        <input type="submit" value="Subir">
-    </form>
+<h2 class="mb-4"><i class="fas fa-upload me-2"></i>Subida de Archivos</h2>
+
+{% if message %}
+    <div class="alert alert-success" role="alert">
+        {{ message }}
+    </div>
+{% endif %}
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <form method="POST" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="file" class="form-label">Seleccioná el archivo a subir</label>
+                <input type="file" class="form-control" name="file" id="file" required>
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="fas fa-cloud-upload-alt me-1"></i> Subir archivo</button>
+        </form>
+    </div>
+</div>
 {% endblock %}

@@ -135,6 +135,50 @@ def comentarios_view():
     return render_template('comentarios.html', comentarios=comentarios)
 
 # =======================
+# Ruta: Listado de usuarios (enumeración)
+# =======================
+@app.route('/users')
+def lista_usuarios():
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, username FROM users")
+    usuarios = cursor.fetchall()
+    return render_template('users.html', usuarios=usuarios)
+
+# =======================
+# Ruta: Perfil por ID (IDOR)
+# =======================
+@app.route('/profile')
+def perfil():
+    user_id = request.args.get('id', 1)
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute(f"SELECT * FROM users WHERE id = {user_id}")  # ⚠️ No hay validación
+    user = cursor.fetchone()
+    if user:
+        return render_template('profile.html', user=user)
+    return "Usuario no encontrado", 404
+
+# =======================
+# Ruta: Oculta (para fuzzing tipo ffuf)
+# =======================
+@app.route('/hidden')
+def hidden():
+    return "🎯 Ruta oculta encontrada. Estás pensando como un pentester."
+
+# =======================
+# Ruta: Flags estilo CTF
+# =======================
+@app.route('/flag1')
+def flag1():
+    return "FLAG{admin_panel_discovered}"
+
+@app.route('/flag2')
+def flag2():
+    return "FLAG{rce_executed_successfully}"
+
+
+# =======================
 # Ruta: Exposición directa de archivos subidos
 # =======================
 @app.route('/uploads/<filename>')

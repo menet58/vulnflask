@@ -2,31 +2,58 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}VulnFlask{% endblock %}</title>
+    <title>{% block title %}VulnFlask Platform{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome (íconos) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
     <style>
         body {
-            font-family: monospace;
-            background-color: #111;
-            color: #eee;
-            padding: 20px;
+            background-color: #f8f9fa;
         }
-        a { color: cyan; }
-        input, textarea { background-color: #222; color: #eee; border: 1px solid #444; }
+        .navbar-brand {
+            font-weight: bold;
+            color: #0d6efd !important;
+        }
+        footer {
+            margin-top: 40px;
+            padding: 20px;
+            background-color: #e9ecef;
+            text-align: center;
+            font-size: 0.9em;
+            color: #6c757d;
+        }
     </style>
 </head>
 <body>
-    <header>
-        <h1>💀 VulnFlask</h1>
-        <nav>
-            <a href="/">Inicio</a> |
-            <a href="/login">Login</a> |
-            <a href="/dashboard">Dashboard</a> |
-            <a href="/upload">Subir archivo</a> |
-            <a href="/comentarios">Comentarios</a>
-        </nav>
-        <hr>
-    </header>
 
-    {% block content %}{% endblock %}
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
+        <div class="container">
+            <a class="navbar-brand" href="/">VulnFlask</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/login"><i class="fas fa-user-lock"></i> Login</a></li>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido -->
+    <div class="container mt-5">
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        © 2024 VulnFlask Inc. | Plataforma corporativa de pruebas internas.
+    </footer>
+
+    <!-- JS Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
