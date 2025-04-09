@@ -2,22 +2,25 @@ from flask import Flask, render_template, request, redirect, url_for, session, s
 import sqlite3
 import os
 from werkzeug.utils import secure_filename
-import config 
+import config
 
-# Configuración inicial
+# =======================
+# Configuración de la app
+# =======================
+
 app = Flask(__name__)
-app.secret_key = config.SECRET_KEY  # 🔥 Vulnerabilidad intencional
-
+app.secret_key = config.SECRET_KEY
 app.config['UPLOAD_FOLDER'] = config.UPLOAD_FOLDER
-app.config['SESSION_COOKIE_HTTPONLY'] = True
-app.config['SESSION_COOKIE_SECURE'] = False  # ⚠️ Poner en True si usás HTTPS
+app.config['SESSION_COOKIE_HTTPONLY'] = config.SESSION_COOKIE_HTTPONLY
+app.config['SESSION_COOKIE_SECURE'] = config.SESSION_COOKIE_SECURE
 
-
-# Almacenamiento en memoria para comentarios (XSS)
+# =======================
+# Comentarios almacenados en memoria (XSS persistente)
+# =======================
 comentarios = []
 
 # =======================
-# Función para conectar a la base de datos
+# Conexión a la base de datos
 # =======================
 def get_db():
     conn = sqlite3.connect('db.db')
@@ -25,14 +28,15 @@ def get_db():
     return conn
 
 # =======================
-# Rutas
+# Ruta: Página principal
 # =======================
-
 @app.route('/')
 def index():
     return render_template('index.html')
 
-# 🔓 Login vulnerable a inyección SQL
+# =======================
+# Ruta: Login vulnerable (SQLi)
+# =======================
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     error = None
@@ -43,9 +47,9 @@ def login():
         conn = get_db()
         cursor = conn.cursor()
 
-        # ⚠️ Consulta vulnerable (SQLi)
+        # ⚠️ Vulnerabilidad: Inyección SQL por interpolación directa
         query = f"SELECT * FROM users WHERE username = '{username}' AND password = '{password}'"
-        print("[DEBUG] SQL Query:", query)  # Info leak intencional
+        print("[DEBUG] Consulta SQL ejecutada:", query)  # Info leak intencional
         cursor.execute(query)
         user = cursor.fetchone()
 
@@ -57,7 +61,39 @@ def login():
 
     return render_template('login.html', error=error)
 
-# 🧠 Panel privado (sin seguridad extra)
+# =======================
+# Ruta: Acceso administrativo sin control
+# =======================
+@app.route('/admin')
+def admin():
+    # ⚠️ No hay control de autenticación aquí
+    info_sensible = {
+        "users_total": 999,
+        "admin_token": "eyJfaWQiOiJhZG1pbi1wb3dlcjEyMyIsICJyb2xlIjoiZ29kIn0=",
+        "log_server": "http://192.168.1.12/logs",
+        "api_key": "TEST-KEY-1234-LEAKED"
+    }
+    return render_template('admin.html', data=info_sensible)
+
+# =======================
+# Ruta: Simulación de ejecución remota (RCE)
+# =======================
+@app.route('/cmd')
+def ejecutar_comando():
+    comando = request.args.get('exec')
+    if not comando:
+        return "⚠️ Parámetro 'exec' no recibido", 400
+    try:
+        # ⚠️ RCE directa (muy vulnerable)
+        salida = os.popen(comando).read()
+        return f"<pre>{salida}</pre>"
+    except Exception as e:
+        return f"Error al ejecutar comando: {e}"
+
+
+# =======================
+# Ruta: Dashboard sin control real de sesión (inseguro)
+# =======================
 @app.route('/dashboard')
 def dashboard():
     if 'username' in session:
@@ -65,7 +101,9 @@ def dashboard():
     else:
         return redirect(url_for('login'))
 
-# 📤 Subida de archivos sin validación
+# =======================
+# Ruta: Subida de archivos sin validación
+# =======================
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
     message = None
@@ -75,31 +113,52 @@ def upload_file():
         else:
             file = request.files['file']
             if file.filename == '':
-                message = "Nombre de archivo vacío."
+                message = "Archivo sin nombre."
             else:
-                # ⚠️ No se valida extensión ni tipo de archivo
+                # ⚠️ Vulnerabilidad: No se verifica el tipo de archivo ni extensión
                 filename = secure_filename(file.filename)
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
                 message = f"Archivo '{filename}' subido exitosamente."
 
     return render_template('upload.html', message=message)
 
-# 💬 Comentarios vulnerables a XSS persistente
+# =======================
+# Ruta: Comentarios vulnerables a XSS persistente
+# =======================
 @app.route('/comentarios', methods=['GET', 'POST'])
 def comentarios_view():
     if request.method == 'POST':
         autor = request.form['autor']
         texto = request.form['texto']
+        # ⚠️ Vulnerabilidad: Guardamos y mostramos sin sanitizar
         comentarios.append({'autor': autor, 'texto': texto})
     return render_template('comentarios.html', comentarios=comentarios)
 
-# 📂 Permitir acceso a archivos subidos
+# =======================
+# Ruta: Exposición directa de archivos subidos
+# =======================
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 # =======================
-# Iniciar servidor
+# Ruta: Debug Info expuesto
+# =======================
+@app.route('/debug-info')
+def debug_info():
+    # ⚠️ Expone datos internos y del entorno (info leak)
+    return {
+        "SECRET_KEY": app.secret_key,
+        "UPLOAD_FOLDER": app.config['UPLOAD_FOLDER'],
+        "ENV": dict(os.environ),
+        "COOKIES": request.cookies,
+        "SESSION": dict(session),
+        "DEBUG": config.DEBUG
+    }
+
+
+# =======================
+# Iniciar servidor (modo debug activado intencionalmente)
 # =======================
 if __name__ == '__main__':
-    app.run(debug=True)  # ⚠️ Debug activado a propósito (info leak)
+    app.run(debug=config.DEBUG)
