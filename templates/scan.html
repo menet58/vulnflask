@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scanner YARA - VulnFlask</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="topbar">
+        <a class="brand" href="{{ url_for('index') }}">VulnFlask</a>
+        <div class="navlinks">
+            <a href="{{ url_for('upload_file') }}">Upload</a>
+            <a href="{{ url_for('comentarios') }}">XSS</a>
+            <a href="{{ url_for('debug_info') }}">Debug</a>
+        </div>
+    </nav>
+
+    <main class="shell narrow">
+        <section class="panel">
+            <p class="eyebrow">Analisis estatico</p>
+            <h1>Scanner YARA</h1>
+            {% if not yara_enabled %}
+                <p class="alert error">yara-python no esta instalado en esta venv.</p>
+            {% endif %}
+
+            {% if error %}
+                <p class="alert error">{{ error }}</p>
+            {% endif %}
+
+            <form method="POST" enctype="multipart/form-data" class="form">
+                <label for="file">Archivo a analizar</label>
+                <input id="file" type="file" name="file">
+                <button type="submit">Escanear</button>
+            </form>
+        </section>
+
+        {% if result %}
+            <section class="panel">
+                <h2>Resultado</h2>
+                <p><strong>Archivo:</strong> {{ result.filename }}</p>
+                {% if result.matches %}
+                    <ul class="file-list">
+                        {% for match in result.matches %}
+                            <li>{{ match }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No hubo coincidencias.</p>
+                {% endif %}
+            </section>
+        {% endif %}
+    </main>
+</body>
+</html>

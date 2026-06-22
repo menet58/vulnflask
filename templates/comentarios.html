@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XSS persistente - VulnFlask</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="topbar">
+        <a class="brand" href="{{ url_for('index') }}">VulnFlask</a>
+        <div class="navlinks">
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('admin') }}">Admin</a>
+            <a href="{{ url_for('scan') }}">YARA</a>
+        </div>
+    </nav>
+
+    <main class="shell narrow">
+        <section class="panel">
+            <p class="eyebrow">XSS persistente</p>
+            <h1>Comentarios</h1>
+            <form method="POST" class="form">
+                <label for="author">Nombre</label>
+                <input id="author" type="text" name="author" placeholder="tester">
+
+                <label for="body">Comentario</label>
+                <textarea id="body" name="body" rows="5" placeholder="<script>alert(1)</script>"></textarea>
+
+                <button type="submit">Guardar comentario</button>
+            </form>
+        </section>
+
+        <section class="comments">
+            {% for comment in comments %}
+                <article class="comment">
+                    <header>
+                        <strong>{{ comment.author }}</strong>
+                        <span>{{ comment.created_at }}</span>
+                    </header>
+                    <div class="comment-body">{{ comment.body | safe }}</div>
+                </article>
+            {% endfor %}
+        </section>
+    </main>
+</body>
+</html>

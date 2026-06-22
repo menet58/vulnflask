@@ -2,21 +2,46 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Login - VulnFlask</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login vulnerable - VulnFlask</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h2>Inicio de sesión</h2>
+    <nav class="topbar">
+        <a class="brand" href="{{ url_for('index') }}">VulnFlask</a>
+        <div class="navlinks">
+            <a href="{{ url_for('upload_file') }}">Upload</a>
+            <a href="{{ url_for('comentarios') }}">XSS</a>
+            <a href="{{ url_for('debug_info') }}">Debug</a>
+        </div>
+    </nav>
 
-    {% if error %}
-        <p style="color:red;">{{ error }}</p>
-    {% endif %}
+    <main class="shell narrow">
+        <section class="panel">
+            <p class="eyebrow">SQL Injection</p>
+            <h1>Login vulnerable</h1>
 
-    <form method="POST">
-        <label>Usuario:</label><br>
-        <input type="text" name="username"><br><br>
-        <label>Contraseña:</label><br>
-        <input type="password" name="password"><br><br>
-        <input type="submit" value="Entrar">
-    </form>
+            {% if error %}
+                <p class="alert error">{{ error }}</p>
+            {% endif %}
+
+            <form method="POST" class="form">
+                <label for="username">Usuario</label>
+                <input id="username" type="text" name="username" autocomplete="off" placeholder="admin">
+
+                <label for="password">Password</label>
+                <input id="password" type="password" name="password" placeholder="admin">
+
+                <button type="submit">Entrar</button>
+            </form>
+
+            {% if debug_query %}
+                <div class="codebox">
+                    <span>DEBUG QUERY</span>
+                    <code>{{ debug_query }}</code>
+                </div>
+            {% endif %}
+        </section>
+    </main>
 </body>
 </html>

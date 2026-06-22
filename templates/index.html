@@ -2,12 +2,43 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Inicio - VulnFlask</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VulnFlask</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1>Bienvenido a VulnFlask</h1>
-    <p>Esta es una app vulnerable con fines educativos.</p>
-    <a href="/login">🔐 Iniciar sesión</a> |
-    <a href="/upload">📤 Subir archivo</a>
+    <nav class="topbar">
+        <a class="brand" href="{{ url_for('index') }}">VulnFlask</a>
+        <div class="navlinks">
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('upload_file') }}">Upload</a>
+            <a href="{{ url_for('comentarios') }}">XSS</a>
+            <a href="{{ url_for('scan') }}">YARA</a>
+        </div>
+    </nav>
+
+    <main class="shell">
+        <section class="hero">
+            <p class="eyebrow">Laboratorio local de ciberseguridad</p>
+            <h1>Practica vulnerabilidades web en un entorno controlado.</h1>
+            <p>
+                Esta app es insegura a proposito. Usala para aprender, probar payloads
+                y comparar como se ven los fallos desde dentro del codigo.
+            </p>
+        </section>
+
+        <section class="grid">
+            {% for lab in labs %}
+                <a class="lab-card" href="{{ lab.path }}">
+                    <div class="card-head">
+                        <h2>{{ lab.title }}</h2>
+                        <span class="badge">{{ lab.risk }}</span>
+                    </div>
+                    <p>{{ lab.description }}</p>
+                    <span class="path">{{ lab.path }}</span>
+                </a>
+            {% endfor %}
+        </section>
+    </main>
 </body>
 </html>

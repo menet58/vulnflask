@@ -2,20 +2,48 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Subida de archivos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload inseguro - VulnFlask</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h2>Subir archivo</h2>
+    <nav class="topbar">
+        <a class="brand" href="{{ url_for('index') }}">VulnFlask</a>
+        <div class="navlinks">
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('scan') }}">YARA</a>
+            <a href="{{ url_for('debug_info') }}">Debug</a>
+        </div>
+    </nav>
 
-    {% if message %}
-        <p style="color:green;">{{ message }}</p>
-    {% endif %}
+    <main class="shell narrow">
+        <section class="panel">
+            <p class="eyebrow">Upload inseguro</p>
+            <h1>Subir archivo</h1>
 
-    <form method="POST" enctype="multipart/form-data">
-        <input type="file" name="file"><br><br>
-        <input type="submit" value="Subir">
-    </form>
+            {% if message %}
+                <p class="alert success">{{ message }}</p>
+            {% endif %}
 
-    <p><a href="/">🏠 Volver al inicio</a></p>
+            <form method="POST" enctype="multipart/form-data" class="form">
+                <label for="file">Archivo</label>
+                <input id="file" type="file" name="file">
+                <button type="submit">Subir</button>
+            </form>
+        </section>
+
+        <section class="panel">
+            <h2>Archivos expuestos</h2>
+            {% if files %}
+                <ul class="file-list">
+                    {% for file in files %}
+                        <li><a href="{{ url_for('uploaded_file', filename=file) }}">{{ file }}</a></li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No hay archivos subidos todavia.</p>
+            {% endif %}
+        </section>
+    </main>
 </body>
 </html>

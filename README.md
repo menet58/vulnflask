@@ -1,102 +1,81 @@
-# 🧠 VulnFlask - Laboratorio de Ciberseguridad Ética en Flask
+# VulnFlask
 
-**VulnFlask** es una aplicación web vulnerable desarrollada con Python y Flask, creada con fines educativos y de entrenamiento en **pentesting ético**, análisis de vulnerabilidades y pruebas ofensivas.
+Laboratorio local de ciberseguridad etica hecho con Flask. La aplicacion contiene vulnerabilidades intencionales para practicar pruebas web, leer codigo inseguro y entender como se explotan fallos comunes en un entorno controlado.
 
-> ❗ Este proyecto simula un entorno inseguro y **no debe usarse en producción ni contra sistemas sin autorización**.
+> No uses este proyecto en produccion ni contra sistemas sin autorizacion.
 
----
+## Modulos incluidos
 
-## 🚀 Funcionalidades
+| Ruta | Laboratorio | Que demuestra |
+| --- | --- | --- |
+| `/` | Panel de laboratorios | Navegacion principal del proyecto |
+| `/login` | SQL Injection | Query SQL construida con interpolacion de strings |
+| `/dashboard` | Sesion vulnerable | Panel protegido por un login inseguro |
+| `/upload` | Upload inseguro | Archivos sin validacion de tipo, extension ni contenido |
+| `/uploads/<archivo>` | Archivos expuestos | Acceso directo a archivos subidos |
+| `/comentarios` | XSS persistente | Comentarios guardados y renderizados con `safe` |
+| `/admin` | Broken access control | Panel admin accesible sin autenticacion |
+| `/debug-info` | Information disclosure | Secret key, rutas internas y datos de entorno |
+| `/scan` | YARA scanner | Analisis basico de archivos con reglas locales |
 
-- Sistema de login vulnerable a inyección SQL
-- Formulario de subida de archivos sin validación
-- Formulario de comentarios vulnerable a XSS persistente
-- Ruta `/admin` sin autenticación
-- Exposición de archivos subidos al navegador
-- Ejecución de comandos (simulación de RCE)
-- Variables de entorno y errores visibles
-- Cookies sin protección
-- Y más...
+## Instalacion con venv
 
----
-
-## 🧪 Vulnerabilidades incluidas
-
-| #  | Vulnerabilidad                  | Tipo               |
-|----|--------------------------------|--------------------|
-| 1  | Inyección SQL (SQLi)           | Autenticación      |
-| 2  | Subida de archivos             | Sin validación     |
-| 3  | XSS (Cross-Site Scripting)     | Persistente        |
-| 4  | Ruta `/admin` sin auth         | Acceso directo     |
-| 5  | Fugas de errores               | Debug info         |
-| 6  | Secret key visible             | Código fuente      |
-| 7  | Sin protección CSRF            | Formularios        |
-| 8  | Headers inseguros              | Configuración HTTP |
-| 9  | Enumeración de usuarios        | Ruta pública       |
-| 10 | Fuerza bruta sin bloqueo       | Login              |
-| 11 | Campos ocultos manipulables    | HTML forms         |
-| 12 | Cookies no seguras             | Sesión             |
-| 13 | IDOR                           | Manipulación de ID |
-| 14 | Ruta `/debug-info` expuesta    | Variables internas |
-| 15 | Logs sensibles                 | Archivos accesibles|
-
----
-
-## ⚙️ Instalación
-
-1. Cloná el repositorio:
-
-```bash
-git clone https://github.com/tuusuario/vulnflask.git
-cd vulnflask
-```
-2. Instalá las dependencias:
-```bash
+```powershell
+py -3 -m venv .venv
+.\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-```
-3. Ejecutá el script para crear la base de datos:
-```bash
-python init_db.py
-```
-4. Iniciá la aplicación:
-```bash
+python create_db.py
 python app.py
 ```
-📂 Estructura del proyecto
-```php
-vulnflask/
-├── app.py                  # Aplicación principal
-├── init_db.py              # Crea la base de datos con usuarios de prueba
-├── db.db                   # Base de datos SQLite
-├── templates/              # Archivos HTML
-├── static/                 # Archivos estáticos (opcional)
-├── uploads/                # Archivos subidos (vulnerables)
-├── requirements.txt
-└── README.md
+
+Si PowerShell bloquea la activacion:
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\.venv\Scripts\Activate.ps1
 ```
-📍 Rutas de interés
-- / → Página principal
 
-- /login → Formulario vulnerable a SQLi
+## Pruebas rapidas
 
-- /dashboard → Panel de usuario
+SQLi en `/login`:
 
-- /upload → Subida de archivos sin validación
+```text
+Usuario: admin' --
+Password: cualquiera
+```
 
-- /comentarios → XSS persistente
+XSS persistente en `/comentarios`:
 
-- /admin → Ruta sin autenticación (info sensible)
-  
-- /uploads/<archivo> → Acceso directo a archivos subidos
+```html
+<script>alert(1)</script>
+```
 
-- /debug-info → Información interna simulada
+YARA en `/scan`:
 
-⚠️ Disclaimer legal
-Este proyecto está diseñado exclusivamente para propósitos educativos y de laboratorio personal.
-El uso de este código en sistemas sin consentimiento explícito es ilegal y no está respaldado por el autor.
+Sube un `.txt` con este contenido:
 
-Siempre hacé pentesting con ética y autorización.
+```text
+powershell -nop -w hidden
+```
 
+La regla `rules/lab_rules.yar` deberia detectar `Windows_Command_Strings`.
 
-👨‍💻 Autor
-Desarrollado con ❤️ por menet58
+## Estructura
+
+```text
+vulnflask/
+  app.py
+  create_db.py
+  db.db
+  requirements.txt
+  rules/
+    lab_rules.yar
+  static/
+    style.css
+  templates/
+  uploads/
+```
+
+## Nota
+
+El proyecto mantiene malas practicas a proposito: passwords en texto plano, secret key hardcodeada, SQLi, XSS, rutas sin auth, debug expuesto y upload inseguro. La idea es aprender a reconocerlas y luego crear versiones seguras para comparar.

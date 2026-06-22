@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - VulnFlask</title>
+    <title>Debug info - VulnFlask</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
@@ -11,19 +11,20 @@
         <a class="brand" href="{{ url_for('index') }}">VulnFlask</a>
         <div class="navlinks">
             <a href="{{ url_for('admin') }}">Admin</a>
-            <a href="{{ url_for('logout') }}">Salir</a>
+            <a href="{{ url_for('upload_file') }}">Upload</a>
         </div>
     </nav>
 
     <main class="shell narrow">
         <section class="panel">
-            <p class="eyebrow">Sesion activa</p>
-            <h1>Bienvenido, {{ user }}</h1>
-            <p>Este panel requiere sesion, pero el login que lo protege es vulnerable a SQLi.</p>
-            <div class="actions">
-                <a class="button" href="{{ url_for('upload_file') }}">Probar upload</a>
-                <a class="button secondary" href="{{ url_for('scan') }}">Analizar con YARA</a>
-            </div>
+            <p class="eyebrow">Information disclosure</p>
+            <h1>Debug info expuesto</h1>
+            <dl class="kv">
+                {% for key, value in info.items() %}
+                    <dt>{{ key }}</dt>
+                    <dd>{{ value }}</dd>
+                {% endfor %}
+            </dl>
         </section>
     </main>
 </body>
