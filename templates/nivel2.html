@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nivel 2 - Medio</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="topbar">
+        <a class="brand" href="{{ url_for('index') }}">VulnFlask</a>
+        <div class="navlinks">
+            <a href="{{ url_for('niveles') }}">Niveles</a>
+            <a href="{{ url_for('admin') }}">Admin</a>
+            <a href="{{ url_for('debug_info') }}">Debug</a>
+        </div>
+    </nav>
+
+    <main class="shell">
+        <section class="level-hero level-2">
+            <p class="eyebrow">Dificultad: media</p>
+            <h1>Nivel 2 - Medio</h1>
+            <p>Exposicion de informacion, rutas sin autenticacion y datos internos visibles desde el navegador.</p>
+            <a class="button secondary" href="{{ url_for('recursos_nivel', level_id=2) }}">Ver recursos del nivel</a>
+        </section>
+
+        <section class="panel">
+            <h2>Reglas de ciber del nivel</h2>
+            <ul class="check-list">
+                <li>Prueba primero sin sesion iniciada.</li>
+                <li>Distingue autenticacion de autorizacion: estar logueado no significa ser admin.</li>
+                <li>Marca como sensible cualquier secreto, ruta local, token, host interno o password.</li>
+                <li>Una pagina que solo "muestra datos" tambien puede ser una vulnerabilidad.</li>
+            </ul>
+        </section>
+
+        <section class="panel">
+            <h2>Modulos del nivel</h2>
+            <p>Los mismos modulos se practican con dificultad media: validacion, acceso indebido y exposicion.</p>
+        </section>
+
+        <section class="module-grid">
+            {% for module in modules %}
+                <article class="module-card">
+                    <div class="module-head">
+                        <h2>{{ module.name }}</h2>
+                        <a class="button secondary" href="{{ module.route }}">Abrir</a>
+                    </div>
+                    <p>{{ module.objective }}</p>
+                    <h3>Practica</h3>
+                    <p>{{ module.task }}</p>
+                    <h3>Payload</h3>
+                    <pre class="payload"><code>{{ module.payload }}</code></pre>
+                    <div class="defense-box">
+                        <strong>Observa:</strong> {{ module.observe }}
+                    </div>
+                </article>
+            {% endfor %}
+        </section>
+
+        <section class="activity-list">
+            <article class="activity-card">
+                <div class="activity-head">
+                    <div>
+                        <p class="eyebrow">Broken access control</p>
+                        <h2>Entrar a admin sin permiso</h2>
+                    </div>
+                    <a class="button secondary" href="{{ url_for('admin') }}">Abrir admin</a>
+                </div>
+                <p>Objetivo: comprobar si una ruta sensible esta protegida por login y rol.</p>
+                <div class="activity-grid">
+                    <div>
+                        <h3>Pasos</h3>
+                        <ol class="step-list">
+                            <li>Cierra sesion si estabas logueado.</li>
+                            <li>Abre <code>/admin</code> directamente.</li>
+                            <li>Revisa si ves usuarios, passwords o secretos simulados.</li>
+                        </ol>
+                    </div>
+                    <div>
+                        <h3>Que observar</h3>
+                        <p>Si carga sin login, el control de acceso esta roto.</p>
+                        <h3>Riesgo</h3>
+                        <p>Un atacante puede recolectar credenciales o datos internos sin explotar nada mas.</p>
+                    </div>
+                </div>
+                <div class="defense-box">
+                    <strong>Defensa:</strong> exigir sesion y validar rol admin en servidor antes de consultar datos sensibles.
+                </div>
+            </article>
+
+            <article class="activity-card">
+                <div class="activity-head">
+                    <div>
+                        <p class="eyebrow">Information disclosure</p>
+                        <h2>Leer informacion interna</h2>
+                    </div>
+                    <a class="button secondary" href="{{ url_for('debug_info') }}">Abrir debug</a>
+                </div>
+                <p>Objetivo: identificar informacion tecnica que facilita ataques posteriores.</p>
+                <div class="activity-grid">
+                    <div>
+                        <h3>Pasos</h3>
+                        <ol class="step-list">
+                            <li>Abre <code>/debug-info</code>.</li>
+                            <li>Busca secret key, rutas locales y variables de entorno.</li>
+                            <li>Decide que informacion deberia ocultarse.</li>
+                        </ol>
+                    </div>
+                    <div>
+                        <h3>Checklist sensible</h3>
+                        <ul class="check-list">
+                            <li>Secret keys</li>
+                            <li>Paths internos</li>
+                            <li>Hosts privados</li>
+                            <li>Usuarios actuales</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="defense-box">
+                    <strong>Defensa:</strong> apagar debug publico, usar errores genericos y guardar secretos en variables de entorno no expuestas.
+                </div>
+            </article>
+        </section>
+    </main>
+</body>
+</html>

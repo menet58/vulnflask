@@ -9,6 +9,13 @@ Laboratorio local de ciberseguridad etica hecho con Flask. La aplicacion contien
 | Ruta | Laboratorio | Que demuestra |
 | --- | --- | --- |
 | `/` | Panel de laboratorios | Navegacion principal del proyecto |
+| `/niveles` | Niveles de seguridad | Guia de practica del nivel 1 al 4 |
+| `/nivel/<numero>` | Nivel especifico | Laboratorios, defensas y practicas por dificultad |
+| `/recursos/nivel/<numero>` | Recursos por nivel | Checklists, payloads y mini retos segun dificultad |
+| `/lab/nivel/<numero>/login` | Login por nivel | Login nuevo con dificultad progresiva |
+| `/lab/nivel/<numero>/upload` | Upload por nivel | Upload nuevo con controles o fallos segun dificultad |
+| `/lab/nivel/<numero>/xss` | XSS por nivel | XSS reflejado nuevo con dificultad progresiva |
+| `/lab/nivel/<numero>/comentarios` | Comentarios por nivel | Comentarios nuevos con persistencia por nivel |
 | `/login` | SQL Injection | Query SQL construida con interpolacion de strings |
 | `/dashboard` | Sesion vulnerable | Panel protegido por un login inseguro |
 | `/upload` | Upload inseguro | Archivos sin validacion de tipo, extension ni contenido |
@@ -17,6 +24,45 @@ Laboratorio local de ciberseguridad etica hecho con Flask. La aplicacion contien
 | `/admin` | Broken access control | Panel admin accesible sin autenticacion |
 | `/debug-info` | Information disclosure | Secret key, rutas internas y datos de entorno |
 | `/scan` | YARA scanner | Analisis basico de archivos con reglas locales |
+
+## Niveles de seguridad
+
+| Nivel | Nombre | Enfoque |
+| --- | --- | --- |
+| 1 | Basico | Reconocimiento, rutas visibles y analisis YARA simple |
+| 2 | Medio | Exposicion de informacion y controles de acceso debiles |
+| 3 | Alto | Entradas peligrosas como XSS y subida insegura |
+| 4 | Extremo | Bypass de autenticacion y fallos criticos como SQLi |
+
+La idea es practicar primero como atacante y luego implementar la defensa equivalente:
+validacion de entrada, autorizacion por rol, queries parametrizadas, hash de passwords,
+CSRF tokens, limites de subida y errores controlados.
+
+Cada pagina `/nivel/<numero>` incluye:
+
+- Objetivo de la practica
+- Ruta que se debe abrir
+- Pasos concretos
+- Payload de prueba
+- Que observar en la app
+- Defensa recomendada
+
+Cada nivel tiene laboratorios nuevos, separados de los originales, con dificultad creciente:
+
+- Login
+- Upload
+- XSS reflejado
+- Comentarios persistentes
+
+Los niveles tienen templates separados para poder personalizarlos:
+
+```text
+templates/nivel1.html
+templates/nivel2.html
+templates/nivel3.html
+templates/nivel4.html
+templates/recursos_nivel.html
+```
 
 ## Instalacion con venv
 

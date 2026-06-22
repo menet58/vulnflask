@@ -10,6 +10,7 @@ cursor = conn.cursor()
 
 cursor.execute("DROP TABLE IF EXISTS users")
 cursor.execute("DROP TABLE IF EXISTS comments")
+cursor.execute("DROP TABLE IF EXISTS level_comments")
 
 cursor.execute(
     """
@@ -32,8 +33,22 @@ cursor.execute(
     """
 )
 
+cursor.execute(
+    """
+    CREATE TABLE level_comments (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        level INTEGER NOT NULL,
+        author TEXT NOT NULL,
+        body TEXT NOT NULL,
+        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    )
+    """
+)
+
 users = [
     ("admin", "admin"),
+    ("aprendiz", "nivel1"),
+    ("analista", "nivel2"),
     ("test", "1234"),
     ("usuario", "contrasena"),
     ("victima", "password"),

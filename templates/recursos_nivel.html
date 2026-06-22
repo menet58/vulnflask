@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ resources.title }} - VulnFlask</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="topbar">
+        <a class="brand" href="{{ url_for('index') }}">VulnFlask</a>
+        <div class="navlinks">
+            <a href="{{ url_for('niveles') }}">Niveles</a>
+            <a href="{{ url_for('nivel', level_id=selected_level.id) }}">Volver al nivel</a>
+            <a href="{{ url_for('scan') }}">YARA</a>
+        </div>
+    </nav>
+
+    <main class="shell">
+        <section class="level-hero level-{{ selected_level.id }}">
+            <p class="eyebrow">Dificultad: {{ resources.difficulty }}</p>
+            <h1>{{ resources.title }}</h1>
+            <p>{{ resources.focus }}</p>
+        </section>
+
+        <section class="resource-grid">
+            {% for item in resources["items"] %}
+                <article class="resource-card">
+                    <div class="resource-head">
+                        <span class="resource-kind">{{ item.kind }}</span>
+                        <h2>{{ item.name }}</h2>
+                    </div>
+                    <ul class="check-list">
+                        {% for line in item.content %}
+                            <li>{{ line }}</li>
+                        {% endfor %}
+                    </ul>
+                </article>
+            {% endfor %}
+        </section>
+
+        <section class="panel">
+            <h2>Como usar estos recursos</h2>
+            <p>
+                Primero ejecuta la practica del nivel, luego usa estos recursos como apoyo
+                para revisar evidencia, repetir pruebas y pensar la defensa.
+            </p>
+        </section>
+    </main>
+</body>
+</html>

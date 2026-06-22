@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Niveles de seguridad - VulnFlask</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="topbar">
+        <a class="brand" href="{{ url_for('index') }}">VulnFlask</a>
+        <div class="navlinks">
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('upload_file') }}">Upload</a>
+            <a href="{{ url_for('comentarios') }}">XSS</a>
+            <a href="{{ url_for('scan') }}">YARA</a>
+        </div>
+    </nav>
+
+    <main class="shell">
+        <section class="hero compact">
+            <p class="eyebrow">Escalera de practica</p>
+            <h1>Niveles de seguridad</h1>
+            <p>
+                Usa estos niveles para practicar de menor a mayor impacto:
+                reconocimiento, exposicion de informacion, entrada peligrosa y compromiso directo.
+            </p>
+        </section>
+
+        <section class="levels-grid">
+            {% for level in levels %}
+                <a class="level-card level-{{ level.id }}" href="{{ url_for('nivel', level_id=level.id) }}">
+                    <span class="level-number">{{ level.id }}</span>
+                    <h2>{{ level.name }}</h2>
+                    <strong>{{ level.tag }}</strong>
+                    <p>{{ level.summary }}</p>
+                </a>
+            {% endfor %}
+        </section>
+
+        <section class="panel">
+            <h2>Como usar los niveles</h2>
+            <ul class="check-list">
+                <li>Nivel 1: observa y detecta sin explotar fallos graves.</li>
+                <li>Nivel 2: busca informacion expuesta y accesos mal protegidos.</li>
+                <li>Nivel 3: prueba entradas peligrosas como XSS y uploads.</li>
+                <li>Nivel 4: practica bypass de autenticacion y SQL Injection.</li>
+            </ul>
+        </section>
+    </main>
+</body>
+</html>

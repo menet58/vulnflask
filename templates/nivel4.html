@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nivel 4 - Extremo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="topbar">
+        <a class="brand" href="{{ url_for('index') }}">VulnFlask</a>
+        <div class="navlinks">
+            <a href="{{ url_for('niveles') }}">Niveles</a>
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        </div>
+    </nav>
+
+    <main class="shell">
+        <section class="level-hero level-4">
+            <p class="eyebrow">Dificultad: extrema</p>
+            <h1>Nivel 4 - Extremo</h1>
+            <p>Compromiso directo del flujo principal: bypass de login, SQL Injection y fuga de consultas internas.</p>
+            <a class="button secondary" href="{{ url_for('recursos_nivel', level_id=4) }}">Ver recursos del nivel</a>
+        </section>
+
+        <section class="panel">
+            <h2>Reglas de ciber del nivel</h2>
+            <ul class="check-list">
+                <li>Trabaja solo contra tu laboratorio local.</li>
+                <li>Registra payload, respuesta e impacto antes de cambiar el codigo.</li>
+                <li>No confundas validacion visual con seguridad del servidor.</li>
+                <li>La defensa real debe estar en backend: parametros, hashes, rate limit y CSRF.</li>
+            </ul>
+        </section>
+
+        <section class="panel">
+            <h2>Modulos del nivel</h2>
+            <p>En dificultad extrema, los modulos se usan para bypass, impacto persistente y cadenas de ataque.</p>
+        </section>
+
+        <section class="module-grid">
+            {% for module in modules %}
+                <article class="module-card">
+                    <div class="module-head">
+                        <h2>{{ module.name }}</h2>
+                        <a class="button secondary" href="{{ module.route }}">Abrir</a>
+                    </div>
+                    <p>{{ module.objective }}</p>
+                    <h3>Practica</h3>
+                    <p>{{ module.task }}</p>
+                    <h3>Payload</h3>
+                    <pre class="payload"><code>{{ module.payload }}</code></pre>
+                    <div class="defense-box">
+                        <strong>Observa:</strong> {{ module.observe }}
+                    </div>
+                </article>
+            {% endfor %}
+        </section>
+
+        <section class="activity-list">
+            <article class="activity-card">
+                <div class="activity-head">
+                    <div>
+                        <p class="eyebrow">SQL Injection</p>
+                        <h2>Bypass de autenticacion</h2>
+                    </div>
+                    <a class="button secondary" href="{{ url_for('login') }}">Abrir login</a>
+                </div>
+                <p>Objetivo: saltar el login manipulando la consulta SQL que arma el servidor.</p>
+                <div class="activity-grid">
+                    <div>
+                        <h3>Pasos</h3>
+                        <ol class="step-list">
+                            <li>Abre <code>/login</code>.</li>
+                            <li>Usa el payload en el campo usuario.</li>
+                            <li>Escribe cualquier password y envia el formulario.</li>
+                            <li>Confirma si llegas al dashboard.</li>
+                        </ol>
+                    </div>
+                    <div>
+                        <h3>Payload</h3>
+                        <pre class="payload"><code>admin' --</code></pre>
+                        <h3>Que observar</h3>
+                        <p>El comentario SQL corta la parte del password y puede devolver la fila del usuario admin.</p>
+                    </div>
+                </div>
+                <div class="defense-box">
+                    <strong>Defensa:</strong> usar consultas parametrizadas, passwords hasheados y errores genericos.
+                </div>
+            </article>
+
+            <article class="activity-card">
+                <div class="activity-head">
+                    <div>
+                        <p class="eyebrow">Debug leak</p>
+                        <h2>Leer la consulta generada</h2>
+                    </div>
+                    <a class="button secondary" href="{{ url_for('login') }}">Abrir login</a>
+                </div>
+                <p>Objetivo: ver como una fuga de debug facilita construir un payload correcto.</p>
+                <div class="activity-grid">
+                    <div>
+                        <h3>Pasos</h3>
+                        <ol class="step-list">
+                            <li>Intenta login con datos falsos.</li>
+                            <li>Observa el bloque <code>DEBUG QUERY</code>.</li>
+                            <li>Agrega comillas y comentarios SQL para ver como cambia la consulta.</li>
+                        </ol>
+                    </div>
+                    <div>
+                        <h3>Payload alternativo</h3>
+                        <pre class="payload"><code>' OR '1'='1' --</code></pre>
+                        <h3>Que observar</h3>
+                        <p>La app muestra la estructura exacta del SQL vulnerable.</p>
+                    </div>
+                </div>
+                <div class="defense-box">
+                    <strong>Defensa:</strong> no mostrar queries internas al usuario y enviar logs sensibles solo a un sistema seguro.
+                </div>
+            </article>
+        </section>
+    </main>
+</body>
+</html>

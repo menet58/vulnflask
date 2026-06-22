@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nivel 3 - Alto</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="topbar">
+        <a class="brand" href="{{ url_for('index') }}">VulnFlask</a>
+        <div class="navlinks">
+            <a href="{{ url_for('niveles') }}">Niveles</a>
+            <a href="{{ url_for('comentarios') }}">XSS</a>
+            <a href="{{ url_for('upload_file') }}">Upload</a>
+        </div>
+    </nav>
+
+    <main class="shell">
+        <section class="level-hero level-3">
+            <p class="eyebrow">Dificultad: alta</p>
+            <h1>Nivel 3 - Alto</h1>
+            <p>Entradas peligrosas: contenido creado por usuarios, HTML persistente y archivos subidos sin validacion suficiente.</p>
+            <a class="button secondary" href="{{ url_for('recursos_nivel', level_id=3) }}">Ver recursos del nivel</a>
+        </section>
+
+        <section class="panel">
+            <h2>Reglas de ciber del nivel</h2>
+            <ul class="check-list">
+                <li>Todo input del usuario debe considerarse no confiable.</li>
+                <li>Valida al entrar y escapa al salir.</li>
+                <li>No confies solo en la extension de un archivo.</li>
+                <li>Documenta impacto: ejecucion en navegador, persistencia o exposicion del archivo.</li>
+            </ul>
+        </section>
+
+        <section class="panel">
+            <h2>Modulos del nivel</h2>
+            <p>En dificultad alta, cada modulo prueba entrada peligrosa, persistencia o contenido controlado.</p>
+        </section>
+
+        <section class="module-grid">
+            {% for module in modules %}
+                <article class="module-card">
+                    <div class="module-head">
+                        <h2>{{ module.name }}</h2>
+                        <a class="button secondary" href="{{ module.route }}">Abrir</a>
+                    </div>
+                    <p>{{ module.objective }}</p>
+                    <h3>Practica</h3>
+                    <p>{{ module.task }}</p>
+                    <h3>Payload</h3>
+                    <pre class="payload"><code>{{ module.payload }}</code></pre>
+                    <div class="defense-box">
+                        <strong>Observa:</strong> {{ module.observe }}
+                    </div>
+                </article>
+            {% endfor %}
+        </section>
+
+        <section class="activity-list">
+            <article class="activity-card">
+                <div class="activity-head">
+                    <div>
+                        <p class="eyebrow">XSS persistente</p>
+                        <h2>Guardar HTML ejecutable</h2>
+                    </div>
+                    <a class="button secondary" href="{{ url_for('comentarios') }}">Abrir comentarios</a>
+                </div>
+                <p>Objetivo: entender que pasa cuando la app guarda contenido del usuario y lo renderiza sin escape.</p>
+                <div class="activity-grid">
+                    <div>
+                        <h3>Pasos</h3>
+                        <ol class="step-list">
+                            <li>Abre <code>/comentarios</code>.</li>
+                            <li>Guarda el payload como comentario.</li>
+                            <li>Recarga la pagina y observa si se ejecuta o queda persistente.</li>
+                        </ol>
+                    </div>
+                    <div>
+                        <h3>Payload</h3>
+                        <pre class="payload"><code>&lt;script&gt;alert(1)&lt;/script&gt;</code></pre>
+                        <h3>Que observar</h3>
+                        <p>El comentario queda guardado en la base de datos y se muestra con <code>|safe</code>.</p>
+                    </div>
+                </div>
+                <div class="defense-box">
+                    <strong>Defensa:</strong> escapar salida HTML, sanitizar si permites formato y aplicar Content Security Policy.
+                </div>
+            </article>
+
+            <article class="activity-card">
+                <div class="activity-head">
+                    <div>
+                        <p class="eyebrow">Upload inseguro</p>
+                        <h2>Subir archivo controlado</h2>
+                    </div>
+                    <a class="button secondary" href="{{ url_for('upload_file') }}">Abrir upload</a>
+                </div>
+                <p>Objetivo: comprobar que el servidor acepta y expone archivos sin validacion fuerte.</p>
+                <div class="activity-grid">
+                    <div>
+                        <h3>Pasos</h3>
+                        <ol class="step-list">
+                            <li>Crea un archivo <code>prueba.html</code>.</li>
+                            <li>Subelo desde <code>/upload</code>.</li>
+                            <li>Abre el enlace generado en <code>/uploads/prueba.html</code>.</li>
+                        </ol>
+                    </div>
+                    <div>
+                        <h3>Contenido de prueba</h3>
+                        <pre class="payload"><code>&lt;h1&gt;archivo controlado por usuario&lt;/h1&gt;</code></pre>
+                        <h3>Que observar</h3>
+                        <p>El archivo se guarda y queda accesible desde el navegador.</p>
+                    </div>
+                </div>
+                <div class="defense-box">
+                    <strong>Defensa:</strong> validar extension, MIME, tamano y contenido; renombrar archivos y servirlos desde almacenamiento aislado.
+                </div>
+            </article>
+        </section>
+    </main>
+</body>
+</html>

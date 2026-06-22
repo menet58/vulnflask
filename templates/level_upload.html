@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload {{ selected_level.name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="topbar">
+        <a class="brand" href="{{ url_for('index') }}">VulnFlask</a>
+        <div class="navlinks">
+            <a href="{{ url_for('nivel', level_id=selected_level.id) }}">Volver al nivel</a>
+            <a href="{{ url_for('level_login', level_id=selected_level.id) }}">Login</a>
+            <a href="{{ url_for('level_xss', level_id=selected_level.id) }}">XSS</a>
+            <a href="{{ url_for('level_comments', level_id=selected_level.id) }}">Comentarios</a>
+        </div>
+    </nav>
+
+    <main class="shell narrow">
+        <section class="level-hero level-{{ selected_level.id }}">
+            <p class="eyebrow">Upload nuevo por nivel</p>
+            <h1>{{ selected_level.name }}</h1>
+            <p>Este upload usa una carpeta separada para este nivel.</p>
+        </section>
+
+        <section class="panel">
+            {% if error %}<p class="alert error">{{ error }}</p>{% endif %}
+            {% if message %}<p class="alert success">{{ message }}</p>{% endif %}
+
+            <form method="POST" enctype="multipart/form-data" class="form">
+                <label for="file">Archivo</label>
+                <input id="file" name="file" type="file">
+                <button type="submit">Subir</button>
+            </form>
+        </section>
+
+        <section class="panel">
+            <h2>Archivos del nivel</h2>
+            {% if files %}
+                <ul class="file-list">
+                    {% for file in files %}
+                        <li>
+                            <a href="{{ url_for('level_uploaded_file', level_id=selected_level.id, filename=file) }}">
+                                {{ file }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No hay archivos para este nivel.</p>
+            {% endif %}
+        </section>
+    </main>
+</body>
+</html>

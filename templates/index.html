@@ -10,6 +10,7 @@
     <nav class="topbar">
         <a class="brand" href="{{ url_for('index') }}">VulnFlask</a>
         <div class="navlinks">
+            <a href="{{ url_for('niveles') }}">Niveles</a>
             <a href="{{ url_for('login') }}">Login</a>
             <a href="{{ url_for('upload_file') }}">Upload</a>
             <a href="{{ url_for('comentarios') }}">XSS</a>
@@ -27,6 +28,15 @@
             </p>
         </section>
 
+        <section class="level-strip">
+            {% for level in levels %}
+                <a class="level-pill level-{{ level.id }}" href="{{ url_for('nivel', level_id=level.id) }}">
+                    <strong>Nivel {{ level.id }}</strong>
+                    <span>{{ level.tag }}</span>
+                </a>
+            {% endfor %}
+        </section>
+
         <section class="grid">
             {% for lab in labs %}
                 <a class="lab-card" href="{{ lab.path }}">
@@ -35,7 +45,10 @@
                         <span class="badge">{{ lab.risk }}</span>
                     </div>
                     <p>{{ lab.description }}</p>
-                    <span class="path">{{ lab.path }}</span>
+                    <div class="card-foot">
+                        <span class="path">{{ lab.path }}</span>
+                        <span class="level-mini">Nivel {{ lab.level }}</span>
+                    </div>
                 </a>
             {% endfor %}
         </section>

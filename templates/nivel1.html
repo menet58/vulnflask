@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nivel 1 - Basico</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="topbar">
+        <a class="brand" href="{{ url_for('index') }}">VulnFlask</a>
+        <div class="navlinks">
+            <a href="{{ url_for('niveles') }}">Niveles</a>
+            <a href="{{ url_for('scan') }}">YARA</a>
+            <a href="{{ url_for('login') }}">Login</a>
+        </div>
+    </nav>
+
+    <main class="shell">
+        <section class="level-hero level-1">
+            <p class="eyebrow">Dificultad: baja</p>
+            <h1>Nivel 1 - Basico</h1>
+            <p>Reconocimiento, lectura de rutas, analisis de respuestas y uso inicial de YARA sin explotar fallos criticos.</p>
+            <a class="button secondary" href="{{ url_for('recursos_nivel', level_id=1) }}">Ver recursos del nivel</a>
+        </section>
+
+        <section class="panel">
+            <h2>Reglas de ciber del nivel</h2>
+            <ul class="check-list">
+                <li>No ataques fuera de este laboratorio local.</li>
+                <li>Primero observa rutas, respuestas, mensajes y archivos visibles.</li>
+                <li>No asumas impacto: registra evidencia antes de clasificar un riesgo.</li>
+                <li>Usa YARA como apoyo de deteccion, no como unica defensa.</li>
+            </ul>
+        </section>
+
+        <section class="panel">
+            <h2>Modulos del nivel</h2>
+            <p>Todos los modulos aparecen en este nivel, pero las pruebas son de baja dificultad.</p>
+        </section>
+
+        <section class="module-grid">
+            {% for module in modules %}
+                <article class="module-card">
+                    <div class="module-head">
+                        <h2>{{ module.name }}</h2>
+                        <a class="button secondary" href="{{ module.route }}">Abrir</a>
+                    </div>
+                    <p>{{ module.objective }}</p>
+                    <h3>Practica</h3>
+                    <p>{{ module.task }}</p>
+                    <h3>Payload</h3>
+                    <pre class="payload"><code>{{ module.payload }}</code></pre>
+                    <div class="defense-box">
+                        <strong>Observa:</strong> {{ module.observe }}
+                    </div>
+                </article>
+            {% endfor %}
+        </section>
+
+        <section class="activity-list">
+            <article class="activity-card">
+                <div class="activity-head">
+                    <div>
+                        <p class="eyebrow">Reconocimiento</p>
+                        <h2>Mapa de rutas visibles</h2>
+                    </div>
+                    <a class="button secondary" href="{{ url_for('index') }}">Abrir portada</a>
+                </div>
+                <p>Objetivo: identificar que superficies de ataque existen antes de probar payloads.</p>
+                <div class="activity-grid">
+                    <div>
+                        <h3>Pasos</h3>
+                        <ol class="step-list">
+                            <li>Abre la portada.</li>
+                            <li>Anota rutas, formularios y enlaces.</li>
+                            <li>Clasifica cada ruta por nivel de riesgo probable.</li>
+                        </ol>
+                    </div>
+                    <div>
+                        <h3>Checklist</h3>
+                        <ul class="check-list">
+                            <li>Hay formularios?</li>
+                            <li>Hay subida de archivos?</li>
+                            <li>Hay rutas que parecen internas?</li>
+                        </ul>
+                    </div>
+                </div>
+            </article>
+
+            <article class="activity-card">
+                <div class="activity-head">
+                    <div>
+                        <p class="eyebrow">YARA</p>
+                        <h2>Detectar strings sospechosos</h2>
+                    </div>
+                    <a class="button secondary" href="{{ url_for('scan') }}">Abrir scanner</a>
+                </div>
+                <p>Objetivo: subir un archivo de prueba y confirmar que una regla YARA detecta texto sospechoso.</p>
+                <div class="activity-grid">
+                    <div>
+                        <h3>Pasos</h3>
+                        <ol class="step-list">
+                            <li>Crea un archivo <code>.txt</code>.</li>
+                            <li>Escribe el payload de prueba.</li>
+                            <li>Subelo en el scanner y revisa el resultado.</li>
+                        </ol>
+                    </div>
+                    <div>
+                        <h3>Payload</h3>
+                        <pre class="payload"><code>powershell -nop -w hidden</code></pre>
+                        <h3>Que observar</h3>
+                        <p>Deberia aparecer la regla <code>Windows_Command_Strings</code>.</p>
+                    </div>
+                </div>
+                <div class="defense-box">
+                    <strong>Defensa:</strong> combinar deteccion YARA con validacion de archivos, limites de tamano y analisis aislado.
+                </div>
+            </article>
+        </section>
+    </main>
+</body>
+</html>

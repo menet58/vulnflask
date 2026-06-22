@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XSS {{ selected_level.name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="topbar">
+        <a class="brand" href="{{ url_for('index') }}">VulnFlask</a>
+        <div class="navlinks">
+            <a href="{{ url_for('nivel', level_id=selected_level.id) }}">Volver al nivel</a>
+            <a href="{{ url_for('level_login', level_id=selected_level.id) }}">Login</a>
+            <a href="{{ url_for('level_upload', level_id=selected_level.id) }}">Upload</a>
+            <a href="{{ url_for('level_comments', level_id=selected_level.id) }}">Comentarios</a>
+        </div>
+    </nav>
+
+    <main class="shell narrow">
+        <section class="level-hero level-{{ selected_level.id }}">
+            <p class="eyebrow">XSS reflejado nuevo por nivel</p>
+            <h1>{{ selected_level.name }}</h1>
+            <p>En niveles 1 y 2 el contenido se escapa. En niveles 3 y 4 se renderiza inseguro.</p>
+        </section>
+
+        <section class="panel">
+            <form method="POST" class="form">
+                <label for="payload">Payload</label>
+                <textarea id="payload" name="payload" rows="5"></textarea>
+                <button type="submit">Reflejar entrada</button>
+            </form>
+        </section>
+
+        {% if reflected %}
+            <section class="panel">
+                <h2>Resultado</h2>
+                {% if render_unsafe %}
+                    <div class="comment-body">{{ reflected | safe }}</div>
+                {% else %}
+                    <div class="comment-body">{{ reflected }}</div>
+                {% endif %}
+            </section>
+        {% endif %}
+    </main>
+</body>
+</html>
